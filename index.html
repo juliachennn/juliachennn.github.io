@@ -13,19 +13,14 @@ body{margin:0}img{max-width:100%}[hidden]{display:none!important}
 
 /* Layout: blueprint sheet — left-aligned editorial column on a faint drafting grid; case studies read like annotated engineering drawings (fig. labels, dimension marks). */
 :root{
-  --paper:#F2F4F6; --surface:#FFFFFF; --ink:#131A23; --muted:#596473; --line:#D6DCE3; --grid:rgba(35,70,214,.055);
-  --accent:#2346D6; --accent-soft:#E6EBFC; --good:#1D7A4C; --good-soft:#E3F3EA; --warn:#A35B06; --bad:#B4342B;
+  --paper:#0D1218; --surface:#141B24; --ink:#E6EBF1; --muted:#97A3B2; --line:#253041; --grid:rgba(124,149,255,.05);
+  --accent:#7D96FF; --accent-soft:#1B2547; --good:#5CC08A; --good-soft:#12291D; --warn:#E3A14A; --bad:#F07A70;
+  color-scheme:dark;
   --display:"Noto Serif TC","Songti TC","PMingLiU",Georgia,serif;
   --body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
   --wrap:1160px; --r:10px;
 }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --paper:#0D1218; --surface:#141B24; --ink:#E6EBF1; --muted:#97A3B2; --line:#253041; --grid:rgba(124,149,255,.05);
-  --accent:#7D96FF; --accent-soft:#1B2547; --good:#5CC08A; --good-soft:#12291D; --warn:#E3A14A; --bad:#F07A70; color-scheme:dark}}
-:root[data-theme="dark"]{
-  --paper:#0D1218; --surface:#141B24; --ink:#E6EBF1; --muted:#97A3B2; --line:#253041; --grid:rgba(124,149,255,.05);
-  --accent:#7D96FF; --accent-soft:#1B2547; --good:#5CC08A; --good-soft:#12291D; --warn:#E3A14A; --bad:#F07A70; color-scheme:dark}
 
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:72px}
