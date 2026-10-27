@@ -1,0 +1,690 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Julia Chen 前端接案</title>
+<meta name="description" content="Julia Chen｜前端工程接案：企業系統與後台、Design System、Web3 交易介面、官網與 App 深連結。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700;900&display=swap">
+<style>
+body{margin:0}img{max-width:100%}[hidden]{display:none!important}
+
+/* Layout: blueprint sheet — left-aligned editorial column on a faint drafting grid; case studies read like annotated engineering drawings (fig. labels, dimension marks). */
+:root{
+  --paper:#F2F4F6; --surface:#FFFFFF; --ink:#131A23; --muted:#596473; --line:#D6DCE3; --grid:rgba(35,70,214,.055);
+  --accent:#2346D6; --accent-soft:#E6EBFC; --good:#1D7A4C; --good-soft:#E3F3EA; --warn:#A35B06; --bad:#B4342B;
+  --display:"Noto Serif TC","Songti TC","PMingLiU",Georgia,serif;
+  --body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --wrap:1160px; --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0D1218; --surface:#141B24; --ink:#E6EBF1; --muted:#97A3B2; --line:#253041; --grid:rgba(124,149,255,.05);
+  --accent:#7D96FF; --accent-soft:#1B2547; --good:#5CC08A; --good-soft:#12291D; --warn:#E3A14A; --bad:#F07A70; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0D1218; --surface:#141B24; --ink:#E6EBF1; --muted:#97A3B2; --line:#253041; --grid:rgba(124,149,255,.05);
+  --accent:#7D96FF; --accent-soft:#1B2547; --good:#5CC08A; --good-soft:#12291D; --warn:#E3A14A; --bad:#F07A70; color-scheme:dark}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.75;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:32px 32px;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--paper)}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+.wrap{max-width:var(--wrap);margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+.mono{font-family:var(--mono)}
+.label{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.3;letter-spacing:.01em}
+p{margin:0}
+
+/* nav */
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:color-mix(in srgb,var(--paper) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;height:60px}
+.brand{font-family:var(--mono);font-size:14px;font-weight:500;text-decoration:none;white-space:nowrap}
+.brand b{color:var(--accent);font-weight:500}
+.nav ul{display:flex;gap:4px;list-style:none;margin:0;padding:0;min-width:0;overflow-x:auto;scrollbar-width:none}
+.nav ul::-webkit-scrollbar{display:none}
+.nav ul a{display:block;padding:6px 10px;border-radius:6px;font-size:14px;text-decoration:none;color:var(--muted);white-space:nowrap}
+.nav ul a:hover{color:var(--ink);background:var(--accent-soft)}
+.nav ul a.cta{color:var(--surface);background:var(--ink)}
+.nav ul a.cta:hover{background:var(--accent);color:#fff}
+@media (max-width:620px){.nav ul li.hide-sm{display:none}}
+
+/* hero */
+.hero{padding-block:72px 56px}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:56px;align-items:end}
+.hero h1{font-size:clamp(34px,5.4vw,60px);font-weight:900;line-height:1.22;margin-top:18px}
+.hero h1 em{font-style:normal;color:var(--accent);background:linear-gradient(transparent 72%,var(--accent-soft) 72%)}
+.hero .lede{margin-top:22px;font-size:18px;color:var(--muted);max-width:36em}
+.who{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.who strong{font-family:var(--display);font-size:20px}
+.who span{font-family:var(--mono);font-size:13px;color:var(--muted)}
+.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:32px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:8px;font-size:15px;font-weight:500;text-decoration:none;border:1px solid var(--ink);cursor:pointer;font-family:var(--body);transition:background .15s,color .15s,border-color .15s}
+.btn.primary{background:var(--ink);color:var(--paper)}
+.btn.primary:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.ghost:hover{border-color:var(--accent);color:var(--accent)}
+.spec{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.spec-h{display:flex;justify-content:space-between;padding:12px 18px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:12px;color:var(--muted)}
+.spec dl{margin:0;display:grid}
+.spec dl>div{display:grid;grid-template-columns:110px 1fr;gap:12px;padding:14px 18px;border-bottom:1px dashed var(--line);align-items:baseline}
+.spec dl>div:last-child{border-bottom:0}
+.spec dt{font-family:var(--mono);font-size:22px;font-weight:500;color:var(--ink);font-variant-numeric:tabular-nums}
+.spec dd{margin:0;font-size:14px;color:var(--muted);line-height:1.55}
+@media (max-width:880px){.hero-grid{grid-template-columns:1fr;gap:40px}.hero{padding-block:48px 40px}}
+
+/* sections */
+section.block{padding-block:80px;border-top:1px solid var(--line)}
+.sec-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:40px;align-items:end;margin-bottom:44px}
+.sec-head h2{font-size:clamp(26px,3.4vw,38px);font-weight:700;margin-top:10px}
+.sec-head p{color:var(--muted);max-width:36em}
+@media (max-width:820px){.sec-head{grid-template-columns:1fr;gap:14px}section.block{padding-block:56px}}
+
+/* services */
+.services{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--ink);border-left:1px solid var(--line)}
+.svc{padding:28px 26px 30px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:14px;min-width:0;background:color-mix(in srgb,var(--surface) 55%,transparent)}
+.svc-top{display:flex;justify-content:space-between;align-items:center}
+.svc .code{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.svc svg{width:28px;height:28px;stroke:var(--accent);fill:none;stroke-width:1.6}
+.svc h3{font-size:20px}
+.svc p{font-size:15px;color:var(--muted)}
+.svc .fit{margin-top:auto;padding-top:14px;border-top:1px dashed var(--line);font-size:13.5px;line-height:1.6}
+.svc .fit b{font-family:var(--mono);font-weight:500;font-size:11px;letter-spacing:.1em;color:var(--accent);display:block;margin-bottom:4px}
+.svc a.see{font-family:var(--mono);font-size:12.5px;color:var(--accent);text-decoration:none}
+.svc a.see:hover{text-decoration:underline}
+@media (max-width:980px){.services{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:620px){.services{grid-template-columns:1fr}}
+
+/* filter */
+.filter{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px}
+.chip{font-family:var(--mono);font-size:13px;padding:7px 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--muted);cursor:pointer}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+
+/* case studies */
+.cases{display:grid;gap:36px}
+.case{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.case-head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;padding:34px 36px 26px;border-bottom:1px solid var(--line);align-items:start}
+.case-head .kicker{display:flex;gap:10px;flex-wrap:wrap;align-items:center;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.case-head .kicker .tag{color:var(--accent);border:1px solid var(--accent);padding:1px 8px;border-radius:4px}
+.case-head h3{font-size:clamp(23px,2.8vw,31px);margin-top:12px}
+.case-head .sum{margin-top:10px;color:var(--muted);max-width:44em}
+.fig{font-family:var(--mono);font-size:12px;color:var(--muted);text-align:right;white-space:nowrap}
+.fig b{display:block;font-size:30px;font-weight:500;color:var(--ink);line-height:1.1}
+.case-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:0}
+.case-text{padding:30px 36px 34px;display:grid;gap:22px;align-content:start;min-width:0}
+.case-vis{padding:30px 36px 34px;border-left:1px solid var(--line);background:color-mix(in srgb,var(--paper) 60%,var(--surface));min-width:0;display:grid;gap:18px;align-content:start}
+.pt h4{margin:0 0 6px;font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.pt p,.pt li{font-size:15px;color:var(--ink)}
+.pt p+p{margin-top:8px}
+.pt ul{margin:0;padding-left:1.1em;display:grid;gap:4px}
+.pt li::marker{color:var(--accent)}
+.pt.result{background:var(--good-soft);border-radius:8px;padding:14px 16px}
+.pt.result h4{color:var(--good)}
+.stack{display:flex;flex-wrap:wrap;gap:6px}
+.stack span{font-family:var(--mono);font-size:12px;padding:3px 9px;border:1px solid var(--line);border-radius:4px;color:var(--muted);background:var(--surface)}
+.cap{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.cap b{color:var(--ink);font-weight:500}
+@media (max-width:900px){
+  .case-body{grid-template-columns:1fr}.case-vis{border-left:0;border-top:1px solid var(--line)}
+  .case-head,.case-text,.case-vis{padding-left:22px;padding-right:22px}
+  .case-head{grid-template-columns:1fr}.fig{text-align:left}
+}
+
+/* metrics row */
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--line)}
+.metrics>div{padding:20px 24px;border-right:1px solid var(--line);min-width:0}
+.metrics>div:last-child{border-right:0}
+.metrics b{display:block;font-family:var(--mono);font-size:28px;font-weight:500;color:var(--good);font-variant-numeric:tabular-nums;line-height:1.2}
+.metrics span{font-size:13.5px;color:var(--muted)}
+@media (max-width:760px){.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.metrics>div:nth-child(2){border-right:0}.metrics>div:nth-child(-n+2){border-bottom:1px solid var(--line)}}
+
+/* diagrams */
+.sysmap{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.node{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:12px 14px;min-width:0}
+.node .n{font-family:var(--mono);font-size:13px;font-weight:500}
+.node .d{font-size:13px;color:var(--muted)}
+.node .c{font-family:var(--mono);font-size:11.5px;color:var(--accent);margin-top:6px}
+.node.hl{border-color:var(--accent);box-shadow:inset 3px 0 0 var(--accent)}
+.base{grid-column:1/-1;border:1px dashed var(--accent);color:var(--accent);background:var(--accent-soft);border-radius:8px;padding:10px 14px;text-align:center;font-size:13.5px}
+.base .mono{font-size:12px}
+.layers{display:grid;gap:8px;counter-reset:l}
+.layer{display:grid;grid-template-columns:30px 1fr;gap:10px;padding:12px 14px;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+.layer::before{counter-increment:l;content:counter(l);font-family:var(--mono);color:var(--accent);font-weight:500}
+.layer b{display:block;font-family:var(--mono);font-size:13px;font-weight:500}
+.layer span{font-size:13.5px;color:var(--muted);line-height:1.55}
+.contrib{display:grid;gap:10px}
+.bar{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;font-size:13.5px}
+.bar .t{min-width:0}
+.bar .v{font-family:var(--mono);font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.bar .track{grid-column:1/-1;height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.bar .track i{display:block;height:100%;background:var(--accent);border-radius:3px}
+
+.shot{margin:0;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--surface)}
+.shot .chrome{display:flex;gap:5px;padding:8px 10px;border-bottom:1px solid var(--line)}
+.shot .chrome i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.shot img{display:block;width:100%;height:auto}
+.shot figcaption{padding:8px 12px;font-family:var(--mono);font-size:12px;color:var(--muted);border-top:1px solid var(--line)}
+.gallery{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.gallery .shot img{aspect-ratio:16/10;object-fit:cover;object-position:top}
+
+.opts{display:grid;gap:8px}
+.opt{display:grid;grid-template-columns:28px minmax(0,1fr);gap:10px;padding:12px 14px;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+.opt .k{font-family:var(--mono);font-weight:500;color:var(--muted)}
+.opt b{font-size:14px;display:block}
+.opt span{font-size:13px;color:var(--muted);line-height:1.55}
+.opt.pick{border-color:var(--good);background:var(--good-soft)}
+.opt.pick .k,.opt.pick b{color:var(--good)}
+
+.states{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-family:var(--mono);font-size:12.5px}
+.st{padding:6px 10px;border-radius:6px;border:1px solid var(--line);background:var(--surface)}
+.st small{display:block;font-family:var(--body);font-size:11.5px;color:var(--muted)}
+.st.w{border-color:var(--accent);color:var(--accent)}
+.st.s{border-color:var(--warn);color:var(--warn)}
+.st.ok{border-color:var(--good);color:var(--good)}
+.st.no{border-color:var(--bad);color:var(--bad)}
+.arrow{color:var(--muted)}
+
+.flow{display:grid;gap:6px}
+.flow .in{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.flow .in div{border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:8px;font-size:12.5px;text-align:center;line-height:1.45}
+.flow .step{border:1px solid var(--accent);border-radius:6px;padding:10px 12px;font-size:13.5px;background:var(--surface)}
+.flow .step small{display:block;font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+.flow .out{border:1px solid var(--good);background:var(--good-soft);color:var(--good);border-radius:6px;padding:10px 12px;font-size:13.5px;text-align:center}
+.flow .down{text-align:center;color:var(--muted);font-family:var(--mono);font-size:12px;line-height:1}
+
+/* small projects */
+.minis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:36px}
+.mini{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:22px 22px 20px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.mini .kind{font-family:var(--mono);font-size:12px;color:var(--accent)}
+.mini h3{font-size:18px}
+.mini p{font-size:14.5px;color:var(--muted)}
+.mini .stack{margin-top:auto;padding-top:8px}
+@media (max-width:900px){.minis{grid-template-columns:1fr}}
+
+/* process */
+.process{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;border-top:1px solid var(--ink)}
+.proc{padding:24px 22px 26px 0;min-width:0;display:grid;gap:10px;align-content:start}
+.proc+.proc{padding-left:22px;border-left:1px dashed var(--line)}
+.proc .no{font-family:var(--mono);font-size:12px;color:var(--accent)}
+.proc h3{font-size:19px}
+.proc p{font-size:14.5px;color:var(--muted)}
+@media (max-width:900px){.process{grid-template-columns:1fr 1fr}.proc:nth-child(3){padding-left:0;border-left:0}.proc:nth-child(n+3){border-top:1px dashed var(--line)}}
+@media (max-width:560px){.process{grid-template-columns:1fr}.proc,.proc+.proc{padding-left:0;border-left:0}.proc+.proc{border-top:1px dashed var(--line)}}
+.principle{margin-top:36px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:18px;align-items:start;padding:20px 22px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+.principle .label{padding-top:3px}
+.principle p{font-size:15px}
+
+/* tech */
+.tech{display:grid;gap:0;border-top:1px solid var(--ink)}
+.tech>div{display:grid;grid-template-columns:200px minmax(0,1fr);gap:20px;padding:16px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.tech h3{font-family:var(--mono);font-size:13.5px;font-weight:500}
+@media (max-width:620px){.tech>div{grid-template-columns:1fr;gap:8px}}
+
+/* contact */
+.contact{background:var(--ink);color:var(--paper);border-radius:16px;padding:48px;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:48px}
+.contact .label{color:color-mix(in srgb,var(--paper) 65%,var(--accent))}
+.contact h2{font-size:clamp(26px,3.4vw,38px);margin-top:12px;color:var(--paper)}
+.contact p{color:color-mix(in srgb,var(--paper) 72%,var(--ink));margin-top:14px}
+.contact ul{margin:18px 0 0;padding-left:1.1em;display:grid;gap:6px;color:color-mix(in srgb,var(--paper) 82%,var(--ink));font-size:15px}
+.brief{background:var(--surface);color:var(--ink);border-radius:12px;padding:24px;display:grid;gap:14px;min-width:0}
+.brief label{font-size:13px;font-weight:500;display:block;margin-bottom:6px}
+.brief select,.brief textarea{width:100%;font:inherit;font-size:15px;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+.brief textarea{min-height:96px;resize:vertical}
+.brief .types{display:flex;flex-wrap:wrap;gap:6px}
+.brief .types label{margin:0;font-weight:400;font-size:13px;display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border:1px solid var(--line);border-radius:999px;cursor:pointer}
+.brief .types input{accent-color:var(--accent)}
+.brief .types label:has(input:checked){border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+.mailrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding-top:12px;border-top:1px dashed var(--line)}
+.mailrow code{font-family:var(--mono);font-size:14px;user-select:all;word-break:break-all}
+.brief .btn{justify-content:center}
+.brief .btn.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.toast{font-family:var(--mono);font-size:12.5px;color:var(--good);min-height:1.4em}
+@media (max-width:860px){.contact{grid-template-columns:1fr;padding:32px 22px;gap:32px}}
+
+footer{padding-block:40px 56px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+[data-cat].is-hidden{display:none}
+.metrics.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:760px){.metrics.three{grid-template-columns:1fr}.metrics.three>div{border-right:0;border-bottom:1px solid var(--line)}.metrics.three>div:last-child{border-bottom:0}}
+</style>
+</head>
+<body>
+<nav class="nav" aria-label="主要導覽">
+  <div class="wrap">
+    <a class="brand" href="#top">julia<b>.</b>chen <span style="color:var(--muted)">/ frontend</span></a>
+    <ul>
+      <li><a href="#services">服務</a></li>
+      <li><a href="#work">案例</a></li>
+      <li class="hide-sm"><a href="#process">合作方式</a></li>
+      <li class="hide-sm"><a href="#stack">技術</a></li>
+      <li><a class="cta" href="#contact">洽談</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="who"><strong>Julia Chen</strong><span>Senior Frontend Engineer</span></div>
+      <h1>把複雜的業務流程，<br>做成<em>好用、能長期維護</em>的前端系統。</h1>
+      <p class="lede">七年以上前端工程經驗，做過國際物流集團的多系統平台、鏈上永續合約交易所，也做過媒體、企業與公家單位網站。我從需求釐清、架構設計一路做到上線，交付之後你的團隊也接得住。</p>
+      <div class="actions">
+        <a class="btn primary" href="#contact">聊聊你的專案 →</a>
+        <a class="btn ghost" href="#work">看案例</a>
+      </div>
+    </div>
+    <aside class="spec" aria-label="代表成果">
+      <div class="spec-h"><span>SPEC SHEET</span><span>實際成果</span></div>
+      <dl>
+        <div><dt>35%+</dt><dd>導入 Design System 後，新需求開發時程縮短</dd></div>
+        <div><dt>4 × 22</dt><dd>同時支撐 4 個系統、22 個業務領域的前端架構</dd></div>
+        <div><dt>100%</dt><dd>App 推播深連結導向準確率（修正前時好時壞）</dd></div>
+      </dl>
+    </aside>
+  </div>
+</header>
+
+<section class="block" id="services">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><div class="label">Services</div><h2>我能幫你做的事</h2></div>
+      <p>如果你的需求跨好幾項，例如「後台要重寫，順便把元件整理起來」，那正是我最常接到的狀況。</p>
+    </div>
+    <div class="services">
+      <article class="svc">
+        <div class="svc-top"><span class="code">S-01</span><svg viewBox="0 0 28 28" aria-hidden="true"><rect x="3" y="4" width="22" height="20" rx="2"/><path d="M3 10h22M10 10v14"/></svg></div>
+        <h3>企業系統與管理後台</h3>
+        <p>訂單、報價、帳務、文件簽核這類流程多、角色多的系統。從資料流與權限開始設計，讓多個系統維持一致的操作體驗。</p>
+        <div class="fit"><b>適合</b>前台、後台、內部工作台各自為政，越改越難改的團隊</div>
+        <a class="see" href="#case-oec">→ 物流集團多系統平台</a>
+      </article>
+      <article class="svc">
+        <div class="svc-top"><span class="code">S-02</span><svg viewBox="0 0 28 28" aria-hidden="true"><rect x="3" y="3" width="9" height="9" rx="1.5"/><rect x="16" y="3" width="9" height="9" rx="1.5"/><rect x="3" y="16" width="9" height="9" rx="1.5"/><path d="M16 20.5h9M20.5 16v9"/></svg></div>
+        <h3>Design System 與元件庫</h3>
+        <p>把散落各頁的同名元件收斂成一套，附上 Props、用法與情境說明，對齊設計稿，新功能直接用既有元件組起來。</p>
+        <div class="fit"><b>適合</b>設計稿與實際畫面對不上、UI 常要反覆返工的產品</div>
+        <a class="see" href="#case-oec">→ 從元件失控到跨系統規範</a>
+      </article>
+      <article class="svc">
+        <div class="svc-top"><span class="code">S-03</span><svg viewBox="0 0 28 28" aria-hidden="true"><path d="M4 20l6-7 5 4 9-11"/><path d="M18 6h6v6"/></svg></div>
+        <h3>Web3 交易介面</h3>
+        <p>錢包連接、合約讀寫、鏈上模擬報價、交易狀態呈現。把簽名到上鏈的每一種結果都講清楚，金額精度不出錯。</p>
+        <div class="fit"><b>適合</b>DEX、永續合約、流動性池等需要直接和合約互動的 DApp</div>
+        <a class="see" href="#case-tucana">→ 永續合約 DEX 交易所</a>
+      </article>
+      <article class="svc">
+        <div class="svc-top"><span class="code">S-04</span><svg viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="10"/><path d="M4 14h20M14 4c3 3 4 6.5 4 10s-1 7-4 10c-3-3-4-6.5-4-10s1-7 4-10z"/></svg></div>
+        <h3>官網、媒體與行銷頁</h3>
+        <p>SSR / SSG 網站、多語系、GA4 事件追蹤、首屏載入優化，也做過符合無障礙 AA 等級的公家單位網站。</p>
+        <div class="fit"><b>適合</b>需要快速上線、重視 SEO 與載入速度的品牌與活動</div>
+        <a class="see" href="#case-web">→ 媒體與企業網站</a>
+      </article>
+      <article class="svc">
+        <div class="svc-top"><span class="code">S-05</span><svg viewBox="0 0 28 28" aria-hidden="true"><rect x="8" y="3" width="12" height="22" rx="2.5"/><path d="M12 21h4"/><path d="M22 8l3-2M22 12h3"/></svg></div>
+        <h3>App 推播與深連結</h3>
+        <p>React Native 推播點擊開錯頁、冷啟動閃退這類「時好時壞」的問題，找出真正原因後根治，而不是加延遲碰運氣。</p>
+        <div class="fit"><b>適合</b>推播轉換率不穩、深連結在 iOS / Android 行為不一致的 App</div>
+        <a class="see" href="#case-deeplink">→ 知識平台 App 推播深連結</a>
+      </article>
+      <article class="svc">
+        <div class="svc-top"><span class="code">S-06</span><svg viewBox="0 0 28 28" aria-hidden="true"><path d="M5 7h18M5 14h12M5 21h8"/><path d="M19 18l2.5 2.5L26 16"/></svg></div>
+        <h3>前端工程化與團隊規範</h3>
+        <p>Git Flow 與 Code Review 流程、提交前自動檢查、高風險流程的測試與共用 Mock，讓品質不靠個人自律。</p>
+        <div class="fit"><b>適合</b>團隊變大、回歸錯誤變多，想把「怎樣算寫得對」定下來的公司</div>
+        <a class="see" href="#process">→ 我的合作方式</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="work">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><div class="label">Selected work</div><h2>案例</h2></div>
+      <p>每個案例都寫出當時的問題、我做的決定，以及能被驗證的結果。</p>
+    </div>
+
+    <div class="filter" role="group" aria-label="依類型篩選案例">
+      <button class="chip" type="button" id="f-all" data-f="all" aria-pressed="true">全部</button>
+      <button class="chip" type="button" id="f-ent" data-f="ent" aria-pressed="false">企業系統</button>
+      <button class="chip" type="button" id="f-web3" data-f="web3" aria-pressed="false">Web3</button>
+      <button class="chip" type="button" id="f-app" data-f="app" aria-pressed="false">App</button>
+      <button class="chip" type="button" id="f-site" data-f="site" aria-pressed="false">網站</button>
+    </div>
+
+    <div class="cases">
+
+      <!-- logistics -->
+      <article class="case" id="case-oec" data-cat="ent">
+        <div class="case-head">
+          <div>
+            <div class="kicker"><span class="tag">企業系統</span><span>國際物流集團</span><span>Frontend Team Lead</span></div>
+            <h3>一個貨運集團、四套系統，維持同一種操作體驗</h3>
+            <p class="sum">訂艙、出貨、報價、帳務與文件管理橫跨客戶前台、管理後台、內部工作台與官網。四套系統共用同一份業務邏輯，卻由不同人、不同時間各自開發。</p>
+          </div>
+          <div class="fig">fig. 01<b>4 × 22 × 69</b>系統 · 業務域 · 共用元件</div>
+        </div>
+        <div class="case-body">
+          <div class="case-text">
+            <div class="pt"><h4>問題</h4>
+              <ul>
+                <li>同名元件散落各頁、各自維護，設計稿和實際畫面落差大</li>
+                <li>功能開發完常要反覆調整 UI，拖累交付</li>
+                <li>同一個使用者在四套系統有不同權限，只做選單過濾的話，手動輸入網址就能進到不該進的頁面</li>
+              </ul>
+            </div>
+            <div class="pt"><h4>我做的事</h4>
+              <p>帶領 5 人前端團隊，負責客戶前台與內部系統的前端架構。主動提案建置 Design System，邀集設計、PM、SA 與前端一起定規格，並把它拆成正式 WBS 排進 Sprint，讓它成為有時程的項目，而不是順便做的事。</p>
+              <p>權限部分，我把後端回傳的權限清單展開成路由、選單與元件三層防線。沒有權限時不顯示 403，而是帶使用者到他第一個有權限的頁面；同時在 Code Review 時明確提醒：前端權限只改善體驗，安全邊界仍在後端。</p>
+            </div>
+            <div class="pt"><h4>負責範圍</h4>
+              <ul>
+                <li>客戶前台：貨況追蹤重構、海運與空運訂艙流程、即時貨況儀表板、報價與文件簽核</li>
+                <li>管理後台：角色權限系統（RBAC）、組織與帳號管理</li>
+                <li>官網：貨況查詢頁、圖片延遲載入優化、多語系內容</li>
+                <li>內部工作台：可調整欄寬的 B2B 表格、職務代理功能</li>
+              </ul>
+            </div>
+            <div class="stack"><span>React</span><span>Blueprint.js</span><span>Next.js</span><span>SWR</span><span>Redux</span><span>JWT</span><span>i18next</span><span>dnd-kit</span><span>Storybook</span><span>Jest</span></div>
+          </div>
+          <div class="case-vis">
+            <div class="cap"><b>System map</b> · 四套系統共用同一層元件與權限基礎</div>
+            <div class="sysmap">
+              <div class="node hl"><div class="n">Customer Portal</div><div class="d">客戶前台</div><div class="c">1,583 commits · 最大貢獻者</div></div>
+              <div class="node"><div class="n">Portal Admin</div><div class="d">管理後台</div><div class="c">265 commits · 最大貢獻者</div></div>
+              <div class="node"><div class="n">Workbench</div><div class="d">內部作業工作台</div><div class="c">核心貢獻者</div></div>
+              <div class="node"><div class="n">Official Site</div><div class="d">官方網站 · 貨態查詢</div><div class="c">核心貢獻者</div></div>
+              <div class="base">共用元件庫 · Design System <span class="mono">(1,047 commits)</span></div>
+              <div class="base">JWT 驗證 · RBAC 權限模型</div>
+            </div>
+          </div>
+        </div>
+        <div class="metrics">
+          <div><b>35%+</b><span>新需求開發時程縮短</span></div>
+          <div><b>30%</b><span>回歸錯誤發生率降低</span></div>
+          <div><b>90%+</b><span>前端時程預估準確度</span></div>
+          <div><b>65</b><span>個測試檔，覆蓋報價、訂艙、聊天等高風險流程</span></div>
+        </div>
+      </article>
+
+      <!-- perp dex -->
+      <article class="case" id="case-tucana" data-cat="web3">
+        <div class="case-head">
+          <div>
+            <div class="kicker"><span class="tag">Web3</span><span>永續合約去中心化交易所</span><span>前端主要開發者</span></div>
+            <h3>讓使用者在簽名前，就看到準確的成交與手續費</h3>
+            <p class="sum">使用者連接錢包後查看行情、開槓桿倉位、提供流動性。前端不只是介面，而是「操作 → 錢包簽名 → 上鏈 → 確認 → 畫面同步」整條流程的一環。</p>
+          </div>
+        </div>
+        <div class="case-body">
+          <div class="case-text">
+            <div class="pt"><h4>問題</h4>
+              <ul>
+                <li>使用者簽名前要看到準確的預估數量與手續費，但這些數字是合約算的</li>
+                <li>一筆交易從按下到上鏈有好幾種結局，介面必須每一種都講清楚</li>
+              </ul>
+            </div>
+            <div class="pt"><h4>關鍵決定：報價讓合約自己算</h4>
+              <p>把要送出的交易先組好、補上空簽章，送進節點模擬執行一次，再從回傳事件讀出成交數量與手續費。報價和實際成交出自同一份合約邏輯，合約改版也不會悄悄失準。</p>
+              <p>代價是每次估算都要一次網路往返，所以輸入先經過 300ms debounce，估算中另有載入狀態，不讓使用者看到過期的舊數字。</p>
+            </div>
+            <div class="pt"><h4>其他細節</h4>
+              <ul>
+                <li>金額一律用 BigNumber 搭配各代幣精度轉換，避開浮點數在小數尾端失真</li>
+                <li>滑價下限直接寫進合約呼叫參數，由合約在鏈上檢查</li>
+                <li>成交提示附區塊瀏覽器連結，使用者可以自行上鏈核對</li>
+              </ul>
+            </div>
+            <div class="pt"><h4>負責範圍</h4><p>路由、狀態管理、設計系統、合約讀寫封裝、流動性交易流程、快取設定、共用元件與呈現層。</p></div>
+            <div class="stack"><span>React</span><span>TypeScript</span><span>Vite</span><span>TanStack Query</span><span>Zustand</span><span>Chakra UI</span><span>BigNumber.js</span><span>lightweight-charts</span></div>
+          </div>
+          <div class="case-vis">
+            <figure class="shot">
+              <div class="chrome" aria-hidden="true"><i></i><i></i><i></i></div>
+              <img src="img/perp-dex.jpg" alt="永續合約交易介面：BTC/USD 永續合約、槓桿滑桿與即時 K 線" width="1220" height="680" loading="lazy">
+              <figcaption>BTC/USD 永續合約交易頁 · 槓桿滑桿與即時 K 線</figcaption>
+            </figure>
+          </div>
+        </div>
+        <div class="metrics three">
+          <div><b>BigNumber</b><span>所有金額統一精度轉換，避免浮點數失真</span></div>
+          <div><b>300ms</b><span>報價模擬的輸入 debounce</span></div>
+          <div><b>ve(3,3)</b><span>另參與 ve(3,3) DEX 的前端開發</span></div>
+        </div>
+      </article>
+
+      <!-- deep link -->
+      <article class="case" id="case-deeplink" data-cat="app">
+        <div class="case-head">
+          <div>
+            <div class="kicker"><span class="tag">App</span><span>跨平台知識系統 App</span><span>獨立開發</span></div>
+            <h3>讓每一則推播，都打開正確的頁面</h3>
+            <p class="sum">使用者點推播進 App，有時正確打開文章，有時停在首頁，偶爾直接閃退。熱啟動多半正常，冷啟動常出錯，重現條件很不穩定。</p>
+          </div>
+          <div class="fig">fig. 03<b>100%</b>深連結導向準確率</div>
+        </div>
+        <div class="case-body" style="grid-template-columns:minmax(0,1fr)">
+          <div class="case-text">
+            <div class="pt"><h4>真正的原因</h4>
+              <p>同一次點擊會從三個不同入口進到程式：冷啟動的 FCM 初始通知、本地通知的初始事件、前景與背景的點擊事件。冷啟動時導航還沒準備好，網址就先到了；三個入口也可能對同一則通知各觸發一次。</p>
+            </div>
+            <div class="pt"><h4>修正方式</h4>
+              <ul>
+                <li>導航未就緒時先把網址暫存，就緒後再放行，不丟掉也不硬跳</li>
+                <li>記住處理過的通知 ID，重複觸發直接忽略</li>
+                <li>路由對應抽成一份宣告式設定，自訂 scheme 與 https 網址共用同一張表</li>
+              </ul>
+            </div>
+            <div class="pt result"><h4>結果</h4><p>深連結導向準確率達 100%，閃退率下降，iOS、Android 與 Web 的介面呈現一致。</p></div>
+            <div class="stack"><span>React Native</span><span>Nuxt 3</span><span>FCM</span><span>Deep Linking</span></div>
+          </div>
+          </div>
+      </article>
+
+      <!-- Agency sites -->
+      <article class="case" id="case-web" data-cat="site">
+        <div class="case-head">
+          <div>
+            <div class="kicker"><span class="tag">網站</span><span>代理商專案 · 十多個企業與機構網站</span></div>
+            <h3>媒體、選舉專題、科技品牌與公家單位網站</h3>
+            <p class="sum">企業官網、活動報名前後台、新聞媒體前後台，以及符合無障礙 AA 等級的公家單位網站，涵蓋 SSR、SSG 與 CSR。</p>
+          </div>
+          <div class="fig">fig. 04<b>10+</b>企業與機構網站</div>
+        </div>
+        <div class="case-body">
+          <div class="case-text">
+            <div class="pt"><h4>問題</h4>
+              <p>行銷活動頁重視首屏速度，但圖片與第三方 Script 一多，頁面效能就容易受到影響。</p>
+            </div>
+            <div class="pt"><h4>我做的事</h4>
+              <p>逐頁檢視渲染流程，依資源的重要程度調整載入順序，用 Lazy Load、Defer、Async 把非關鍵資源移出首屏，降低初始載入負擔。</p>
+            </div>
+            <div class="stack"><span>React</span><span>Next.js</span><span>Vue</span><span>Nuxt.js</span><span>SSR / SSG</span><span>Lazy Load / Defer</span></div>
+          </div>
+          <div class="case-vis">
+            <div class="gallery">
+              <figure class="shot"><img src="img/news-site.jpg" alt="新聞媒體網站首頁" width="908" height="516" loading="lazy"><figcaption>新聞媒體網站</figcaption></figure>
+              <figure class="shot"><img src="img/election-site.jpg" alt="選舉專題網站" width="517" height="383" loading="lazy"><figcaption>選舉專題網站</figcaption></figure>
+              <figure class="shot"><img src="img/medical-ai-site.jpg" alt="醫療 AI 科技公司官網" width="633" height="443" loading="lazy"><figcaption>醫療 AI 品牌官網</figcaption></figure>
+              <figure class="shot"><img src="img/school-site.jpg" alt="公立學校網站，符合無障礙 AA 等級" width="908" height="503" loading="lazy"><figcaption>公家單位 · 無障礙 AA</figcaption></figure>
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <div class="minis">
+      <article class="mini" data-cat="site">
+        <span class="kind">品牌官網 · 獨立開發</span>
+        <h3>企業品牌官網</h3>
+        <p>一個月內從設計、專案初始化做到上線，導入 i18next 多語系與 GA4 事件追蹤。</p>
+        <div class="stack"><span>React</span><span>i18next</span><span>react-ga4</span></div>
+      </article>
+      <article class="mini" data-cat="site">
+        <span class="kind">電商平台 · 共同核心開發</span>
+        <h3>日系眼鏡電商平台</h3>
+        <p>眼鏡與隱形眼鏡品牌電商。用路由群組把公開頁與需登入頁分開，驗證綁在受保護的 layout 上。我負責商品列表、分類篩選、商品頁與門市庫存查詢。</p>
+        <div class="stack"><span>Next.js 15</span><span>TypeScript</span><span>Tailwind</span><span>next-auth</span></div>
+      </article>
+      <article class="mini" data-cat="site">
+        <span class="kind">開源公益 · 遠端協作</span>
+        <h3>災後志工協作平台</h3>
+        <p>開源公益專案，災後救援的遠端志工協作平台，含互動地圖。</p>
+        <div class="stack"><span>Next.js</span><span>Leaflet</span></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="process">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><div class="label">How we work</div><h2>合作方式</h2></div>
+      <p>我在意的不只是功能能不能動，而是交付之後，你的團隊能不能看懂、能不能安全地改。</p>
+    </div>
+    <div class="process">
+      <div class="proc"><span class="no">STEP 1</span><h3>先對齊目標</h3><p>先和你釐清產品目標與業務流程，再談設計方向與工程規格。用語先對齊，會議才不會各說各話。</p></div>
+      <div class="proc"><span class="no">STEP 2</span><h3>拆到能驗收再估時</h3><p>需求拆成可以獨立驗收的單位才給時程，並持續比對實際工時修正估法。過往前端估時準確度在 90% 以上。</p></div>
+      <div class="proc"><span class="no">STEP 3</span><h3>規範交給工具執行</h3><p>格式、Lint、提交規範在提交前自動檢查；高風險流程先寫測試，Mock 依業務模組拆分，不依賴真實後端也能穩定跑。</p></div>
+      <div class="proc"><span class="no">STEP 4</span><h3>交付可接手的程式碼</h3><p>關鍵元件附上 README，寫清 Props、用法與使用情境。判斷標準很簡單：新人不用問我也能用、也能安全修改。</p></div>
+    </div>
+    <div class="principle">
+      <span class="label">原則</span>
+      <p>測試優先覆蓋最容易出事的流程（例如報價、訂艙），追求的是風險覆蓋，而不是一個好看的整體 Coverage 數字。</p>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="stack">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><div class="label">Toolkit</div><h2>常用技術</h2></div>
+      <p>以 React 與 TypeScript 為主，也能接手 Vue / Nuxt 與 React Native 專案。</p>
+    </div>
+    <div class="tech">
+      <div><h3>Core</h3><div class="stack"><span>React</span><span>TypeScript</span><span>Next.js</span><span>JavaScript ES2020+</span><span>Vue / Nuxt</span><span>React Native</span></div></div>
+      <div><h3>State &amp; Data</h3><div class="stack"><span>TanStack Query</span><span>Redux Toolkit</span><span>Zustand</span><span>xstate</span><span>constate</span><span>SWR</span></div></div>
+      <div><h3>Styling &amp; UI</h3><div class="stack"><span>Tailwind CSS</span><span>SCSS</span><span>Styled Components</span><span>Chakra UI</span><span>Blueprint.js</span><span>Storybook</span></div></div>
+      <div><h3>Engineering</h3><div class="stack"><span>Jest</span><span>Testing Library</span><span>MSW</span><span>ESLint</span><span>Husky</span><span>Vite</span><span>Webpack</span><span>CI/CD</span><span>Docker</span></div></div>
+      <div><h3>Web3</h3><div class="stack"><span>initia.js</span><span>@mysten/sui.js</span><span>Wallet Provider</span><span>BCS</span><span>Move viewFunction</span><span>BigNumber</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="contact" style="border-top:0;padding-top:24px">
+  <div class="wrap">
+    <div class="contact">
+      <div>
+        <div class="label">Let's talk</div>
+        <h2>有專案想討論嗎？</h2>
+        <p>新產品、舊系統重構、元件庫整理，或是一個怎麼修都修不好的 bug，都可以先聊聊。寫信時附上這幾項，我能更快給你方向與估時：</p>
+        <ul>
+          <li>專案類型與目前進度（從零開始，或接手既有系統）</li>
+          <li>希望解決的問題，或想達成的結果</li>
+          <li>期望的上線時間與合作方式</li>
+        </ul>
+      </div>
+      <form class="brief" id="brief" novalidate>
+        <div>
+          <label>專案類型（可複選）</label>
+          <div class="types">
+            <label><input type="checkbox" id="t1" value="企業系統 / 後台">企業系統 / 後台</label>
+            <label><input type="checkbox" id="t2" value="Design System">Design System</label>
+            <label><input type="checkbox" id="t3" value="Web3 交易介面">Web3 交易介面</label>
+            <label><input type="checkbox" id="t4" value="官網 / 行銷頁">官網 / 行銷頁</label>
+            <label><input type="checkbox" id="t5" value="App 推播 / 深連結">App 推播 / 深連結</label>
+            <label><input type="checkbox" id="t6" value="工程化 / 顧問">工程化 / 顧問</label>
+          </div>
+        </div>
+        <div>
+          <label for="stage">目前狀態</label>
+          <select id="stage">
+            <option>從零開始的新專案</option>
+            <option>既有系統要重構或擴充</option>
+            <option>有特定問題要排查</option>
+            <option>還在評估，想先諮詢</option>
+          </select>
+        </div>
+        <div>
+          <label for="desc">需求描述</label>
+          <textarea id="desc" placeholder="例如：我們有一套內部後台，想補上角色權限，順便把重複的表格元件整理起來。"></textarea>
+        </div>
+        <div>
+          <label for="when">期望上線時間</label>
+          <select id="when">
+            <option>一個月內</option>
+            <option>一至三個月</option>
+            <option>三個月以上</option>
+            <option>還不確定</option>
+          </select>
+        </div>
+        <div>
+          <label for="mode">合作方式</label>
+          <select id="mode">
+            <option>專案制（依需求報價）</option>
+            <option>長期合作</option>
+            <option>技術顧問或評估</option>
+            <option>還不確定</option>
+          </select>
+        </div>
+        <button class="btn primary" type="submit">複製需求摘要</button>
+        <div class="toast" id="toast" role="status" aria-live="polite"></div>
+        <div class="mailrow">
+          <span style="font-size:13px;color:var(--muted)">貼到信件寄給</span>
+          <code id="mail">juliachennnn@gmail.com</code>
+          <button class="chip" type="button" id="copyMail">複製信箱</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap"><span>Julia Chen · Frontend Engineering</span><a href="#top" style="text-decoration:none">回到頂端 ↑</a></div>
+</footer>
+
+<script>
+(function(){
+  // case filter
+  var chips=document.querySelectorAll('.filter .chip');
+  var items=document.querySelectorAll('[data-cat]');
+  chips.forEach(function(c){c.addEventListener('click',function(){
+    var f=c.getAttribute('data-f');
+    chips.forEach(function(x){x.setAttribute('aria-pressed',x===c?'true':'false')});
+    items.forEach(function(el){el.classList.toggle('is-hidden',f!=='all'&&el.getAttribute('data-cat')!==f)});
+    var minis=document.querySelector('.minis');
+    minis.hidden=!(f==='all'||f==='site');
+  })});
+
+  // copy helpers
+  var toast=document.getElementById('toast');
+  function say(t){toast.textContent=t;clearTimeout(say._t);say._t=setTimeout(function(){toast.textContent=''},3200)}
+  function copy(text,ok,fallbackEl){
+    var done=function(){say(ok)};
+    var fail=function(){
+      if(fallbackEl){var r=document.createRange();r.selectNodeContents(fallbackEl);var s=getSelection();s.removeAllRanges();s.addRange(r)}
+      say('無法自動複製，已幫你選取文字，請手動複製');
+    };
+    try{navigator.clipboard.writeText(text).then(done,fail)}catch(e){fail()}
+  }
+  document.getElementById('copyMail').addEventListener('click',function(){
+    var m=document.getElementById('mail');copy(m.textContent,'已複製信箱',m);
+  });
+  document.getElementById('brief').addEventListener('submit',function(e){
+    e.preventDefault();
+    var types=[].slice.call(document.querySelectorAll('.types input:checked')).map(function(i){return i.value});
+    var desc=document.getElementById('desc');
+    var text='Julia 你好，\n\n專案類型：'+(types.join('、')||'尚未決定')+'\n目前狀態：'+document.getElementById('stage').value+'\n需求描述：'+(desc.value.trim()||'（待補充）')+'\n期望上線時間：'+document.getElementById('when').value+'\n合作方式：'+document.getElementById('mode').value+'\n';
+    copy(text,'已複製需求摘要，貼到信件寄出即可',desc);
+  });
+})();
+</script>
+</body>
+</html>
